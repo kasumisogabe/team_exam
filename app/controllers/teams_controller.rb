@@ -16,10 +16,10 @@ class TeamsController < ApplicationController
   end
 
   def edit
-    unless @team.owner == current_user
-      redirect_to @team
-    else
+    if @team.owner == current_user
       render :edit
+    else
+      redirect_to @team
     end
   end
 
@@ -56,7 +56,7 @@ class TeamsController < ApplicationController
   def assign_owner
     @team.update(owner_id: params[:owner_id])
     @user = User.find(@team.owner_id)
-    ChangeOwnerMailer.change_owner_mailer(@user).deliver 
+    ChangeOwnerMailer.change_owner_mailer(@user).deliver
     redirect_to team_path, notice: 'オーナー権限が移動しました!'
   end
 
